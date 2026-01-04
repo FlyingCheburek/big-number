@@ -2,6 +2,8 @@ export module big_number_handler:big_integer;
 
 import :big_number;
 import <string>;
+import <type_traits>;
+import <ostream>;
 
 export class BigInteger : public BigNumber {
 public:
@@ -24,5 +26,11 @@ public:
 			ret.push_back(d + '0');
 		}
 		return ret;
+	}
+
+// std::cout<< overloading
+	friend std::ostream& operator<<(std::ostream& os, const BigInteger& obj) {
+		os << obj.to_string();
+		return os;
 	}
 };

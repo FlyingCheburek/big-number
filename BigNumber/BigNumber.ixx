@@ -2,7 +2,6 @@ export module big_number_handler:big_number;
 
 import <vector>;
 import <regex>;
-import <type_traits>;
 
 using DIGIT_LIST = std::vector<short>;
 
