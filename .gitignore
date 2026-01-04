@@ -43,9 +43,10 @@
 .vcxproj.user
 *.user
 *.filters
+BigNumber/.vs/BigNumber/CopilotIndices/18.0.981.45449/SemanticSymbols.db-wal
+*.vsidx
+*.db
 *.vcxproj
 *.slnx
-BigNumber/.vs/BigNumber/CopilotIndices/18.0.981.45449/SemanticSymbols.db-wal
 *.db-shm
-*.db
 *.db-wal
