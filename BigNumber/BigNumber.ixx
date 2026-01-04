@@ -1,6 +1,8 @@
 export module big_number_handler:big_number;
 
 import <vector>;
+import <regex>;
+import <type_traits>;
 
 using DIGIT_LIST = std::vector<short>;
 
@@ -47,6 +49,25 @@ protected:
 	void set_type(const Type type) noexcept { this->type = type; }
 	void set_sign(const Sign sign) noexcept { this->sign = sign; }
 	void set_digits(const Digits digits) noexcept { this->digits = digits; }
-	void set_digits_whole(const DIGIT_LIST whole) { digits.whole = whole; }
-	void set_digits_fractional(const DIGIT_LIST fractional) { digits.fractional = fractional; }
+	void set_digits_whole(const DIGIT_LIST whole) noexcept { digits.whole = whole; }
+	void set_digits_fractional(const DIGIT_LIST fractional) noexcept { digits.fractional = fractional; }
+
+public:
+
+	virtual void set_value(const char* value) = 0;
+	virtual void set_value(const std::string& value) = 0;
+	
+
+// static methods
+
+	static Type inspect_type(const std::string value) noexcept {
+		if (std::regex_match(value, std::regex("^-?\\d+$"))) {
+			return INTEGER;
+		}
+		if (std::regex_match(value, std::regex("^-?\\d*\\.\\d+$"))) {
+			return DECIMAL;
+		}
+		return INVALID;
+	}
+
 };
