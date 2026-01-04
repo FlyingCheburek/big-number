@@ -56,11 +56,17 @@ public:
 
 	virtual void set_value(const char* value) = 0;
 	virtual void set_value(const std::string& value) = 0;
+
+	virtual std::string to_string() const noexcept = 0;
 	
 
 // static methods
 
-	static Type inspect_type(const std::string value) noexcept {
+	static Type inspect_type(const std::string& value) noexcept {
+		return inspect_type(value.c_str());
+	}
+
+	static Type inspect_type(const char* value) noexcept {
 		if (std::regex_match(value, std::regex("^-?\\d+$"))) {
 			return INTEGER;
 		}

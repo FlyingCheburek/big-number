@@ -17,4 +17,12 @@ public:
 	void set_value(const T value) {
 		return set_value(std::to_string(value).c_str());
 	}
+
+	std::string to_string() const noexcept override {
+		std::string ret = sign == NEGATIVE ? "-" : "";
+		for (auto d : digits.whole) {
+			ret.push_back(d + '0');
+		}
+		return ret;
+	}
 };
