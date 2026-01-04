@@ -4,12 +4,58 @@ import :big_number;
 import <string>;
 import <type_traits>;
 import <ostream>;
+import <stdexcept>;
 
 export class BigInteger : public BigNumber {
 public:
 
 	void set_value(const char* value) override {
-		// TODO...
+		Type _type = BigNumber::inspect_type(value);
+		if (_type == INTEGER) {
+			digits.whole.clear();
+			const char* digit = value;
+			sign = POSITIVE;
+			if (*digit == '-') {
+				sign = NEGATIVE;
+				digit++;
+			}
+			while (*digit == '0') {
+				digit++;
+			}
+			if (*digit == '\0') {
+				digits.whole.push_back(0);
+				sign = ZERO;
+			}
+			else {
+				for (; *digit != '\0'; digit++) {
+					digits.whole.push_back(*digit - '0');
+				}
+			}
+		}
+		else if (_type == DECIMAL) {
+			digits.whole.clear();
+			const char* digit = value;
+			sign = POSITIVE;
+			if (*digit == '-') {
+				sign = NEGATIVE;
+				digit++;
+			}
+			while (*digit == '0') {
+				digit++;
+			}
+			if (*digit == '.') {
+				digits.whole.push_back(0);
+				sign = ZERO;
+			}
+			else {
+				for (; *digit != '.'; digit++) {
+					digits.whole.push_back(*digit - '0');
+				}
+			}
+		}
+		else {
+			throw std::invalid_argument("Error in BigInteger::set_value: invalid number formatting provided.");
+		}
 	}
 	void set_value(const std::string& value) override {
 		return set_value(value.c_str());
