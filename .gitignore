@@ -30,3 +30,22 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio project files
+.vsidx
+.db
+.db-shm
+.db-wal
+.opendb
+.slnx
+.vcxproj
+.vcxproj.filters
+.vcxproj.user
+*.user
+*.filters
+*.vcxproj
+*.slnx
+BigNumber/.vs/BigNumber/CopilotIndices/18.0.981.45449/SemanticSymbols.db-wal
+*.db-shm
+*.db
+*.db-wal
