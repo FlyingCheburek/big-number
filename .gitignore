@@ -50,3 +50,9 @@ BigNumber/.vs/BigNumber/CopilotIndices/18.0.981.45449/SemanticSymbols.db-wal
 *.slnx
 *.db-shm
 *.db-wal
+*.pdb
+*.idb
+*.tlog
+*.log
+*.recipe
+*.ilk
