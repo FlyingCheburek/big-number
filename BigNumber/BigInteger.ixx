@@ -8,7 +8,7 @@ import <stdexcept>;
 
 export class BigInteger : public BigNumber {
 public:
-
+	// set_value
 	void set_value(const char* value) override {
 		Type _type = BigNumber::inspect_type(value);
 		if (_type == INTEGER) {
@@ -24,7 +24,6 @@ public:
 			}
 			if (*digit == '\0') {
 				digits.whole.push_back(0);
-				sign = ZERO;
 			}
 			else {
 				for (; *digit != '\0'; digit++) {
@@ -45,7 +44,6 @@ public:
 			}
 			if (*digit == '.') {
 				digits.whole.push_back(0);
-				sign = ZERO;
 			}
 			else {
 				for (; *digit != '.'; digit++) {
@@ -58,13 +56,78 @@ public:
 		}
 	}
 	void set_value(const std::string& value) override {
-		return set_value(value.c_str());
+		set_value(value.c_str());
 	}
 
 	template<typename T> requires std::is_arithmetic_v<T>
 	void set_value(const T value) {
-		return set_value(std::to_string(value).c_str());
+		set_value(std::to_string(value).c_str());
 	}
+	//
+	
+	// sum operations
+	void sum(const char* value) override {
+		BigInteger _value;
+		try {
+			_value.set_value(value);
+			sum(_value);
+		}
+		catch (const std::exception err) {
+			throw std::invalid_argument("Error in BigInteger::sum: invalid number formatting provided.");
+		}
+	}
+	void sum(const std::string& value) override {
+		sum(value.c_str());
+	}
+
+	template<typename T> requires std::is_arithmetic_v<T>
+	void sum(const T value) {
+		sum(std::to_string(value).c_str());
+	}
+
+	void sum(const BigInteger value) noexcept {
+		if (sign == value.get_sign()) {
+			DIGIT_LIST a = get_digits_whole(), b = value.get_digits_whole();
+			DIGIT_LIST* _a = nullptr, * _b = nullptr;
+			if (a.size() >= b.size()) {
+				_a = &a;
+				_b = &b;
+			}
+			else {
+				_a = &b;
+				_b = &a;
+			}
+			size_t max_num_len = _b->size(), i = 0;
+			for (auto a_it = _a->rbegin(), b_it = _b->rbegin(); a_it != _a->rend(); i++, a_it++) {
+				if (i < max_num_len) {
+					*a_it += *b_it;
+					if ((a_it + 1) != _a->rend()) {
+						*(a_it + 1) += *a_it / 10;
+						*a_it %= 10;
+					}
+					b_it++;
+				}
+				else if (*a_it > 9 && (a_it + 1) != _a->rend()) {
+					*(a_it + 1) += *a_it / 10;
+					*a_it %= 10;				
+				}
+			}
+			digits.whole.clear();
+			for (auto a_it = _a->begin(); a_it != _a->end(); a_it++) {
+				if (*a_it > 9) {
+					digits.whole.push_back(*a_it / 10);
+					digits.whole.push_back(*a_it % 10);
+				} 
+				else {
+					digits.whole.push_back(*a_it);
+				}
+			}
+		}
+		else {
+			// TODO (subtraction)...
+		}
+	}
+	//
 
 	std::string to_string() const noexcept override {
 		std::string ret = sign == NEGATIVE ? "-" : "";

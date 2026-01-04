@@ -17,7 +17,6 @@ public:
 	};
 
 	enum Sign {
-		ZERO,
 		POSITIVE,
 		NEGATIVE
 	};
@@ -37,11 +36,13 @@ protected:
 
 public:
 
-	BigNumber() noexcept : type(GENERIC), sign(ZERO), digits({ .whole = {0}, .fractional = {0} }) {  }
+	BigNumber() noexcept : type(GENERIC), sign(POSITIVE), digits({ .whole = {0}, .fractional = {0} }) {  }
 
 	Type get_type() const noexcept { return type; }
 	Sign get_sign() const noexcept { return sign; }
 	Digits get_digits() const noexcept { return digits; }
+	DIGIT_LIST get_digits_whole() const noexcept { return digits.whole; }
+	DIGIT_LIST get_digits_fractional() const noexcept { return digits.fractional; }
 
 protected:
 
@@ -55,6 +56,9 @@ public:
 
 	virtual void set_value(const char* value) = 0;
 	virtual void set_value(const std::string& value) = 0;
+
+	virtual void sum(const char* value) = 0;
+	virtual void sum(const std::string& value) = 0;
 
 	virtual std::string to_string() const noexcept = 0;
 	
