@@ -6,11 +6,15 @@ import <type_traits>;
 import <ostream>;
 import <stdexcept>;
 
+import <iostream>;
+
 export class BigInteger : public BigNumber {
 public:
+	BigInteger() noexcept { type = INTEGER; }
+
 	// set_value
 	void set_value(const char* value) override {
-		Type _type = BigNumber::inspect_type(value);
+		Type _type = inspect_type(value);
 		if (_type == INTEGER) {
 			digits.whole.clear();
 			const char* digit = value;
@@ -24,6 +28,7 @@ public:
 			}
 			if (*digit == '\0') {
 				digits.whole.push_back(0);
+				sign = POSITIVE;
 			}
 			else {
 				for (; *digit != '\0'; digit++) {
@@ -44,6 +49,7 @@ public:
 			}
 			if (*digit == '.') {
 				digits.whole.push_back(0);
+				sign = POSITIVE;
 			}
 			else {
 				for (; *digit != '.'; digit++) {
@@ -62,6 +68,58 @@ public:
 	template<typename T> requires std::is_arithmetic_v<T>
 	void set_value(const T value) {
 		set_value(std::to_string(value).c_str());
+	}
+	//
+
+	// is_equal operation
+	bool is_equal(const char* value) override {
+		Type _type = inspect_type(value);
+		if (_type == INTEGER) {
+			BigInteger _value;
+			_value.set_value(value);
+			return is_equal(_value);
+		}
+		else if (_type == DECIMAL) {
+			std::string whole = "";
+			while (*value != '.') {
+				whole.push_back(*value);
+				value++;
+			}
+			value++;
+			while (*value != '\0') {
+				if (*value != '0')
+					return false;
+				value++;
+			}
+			return is_equal(whole.c_str());
+		}
+		else {
+			throw std::invalid_argument("Error in BigInteger::is_equal: invalid number formatting provided.");
+		}
+		return false;
+	}
+	bool is_equal(const std::string& value) override {
+		return is_equal(value.c_str());
+	}
+
+	template<typename T> requires std::is_arithmetic_v<T>
+	bool is_equal(const T value) {
+		return is_equal(std::to_string(value).c_str());
+	}
+	bool is_equal(const BigInteger value) {
+		if (sign != value.get_sign())
+			return false;
+
+		DIGIT_LIST _value = value.get_digits_whole();
+
+		if (digits.whole.size() != _value.size())
+			return false;
+
+		for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_b != _value.cend(); it_a++, it_b++) {
+			if (*it_a != *it_b)
+				return false;
+		}
+		return true;
 	}
 	//
 	
