@@ -158,6 +158,7 @@ public:
 			return is_greater_than(_value);
 		}
 		else if (_type == DECIMAL) {
+			bool greater_fract = false;
 			std::string whole = "";
 			while (*value != '.') {
 				whole.push_back(*value);
@@ -166,12 +167,12 @@ public:
 			value++;
 			while (*value != '\0') {
 				if (*value != '0')
-					return false;
+					greater_fract = true;
 				value++;
 			}
 			BigInteger _value;
 			_value.set_value(whole);
-			return is_greater_than(_value);
+			return is_greater_than(_value) ? true : is_equal(_value) && !greater_fract;
 		}
 		else {
 			throw std::invalid_argument("Error in BigInteger::is_greater_than: invalid number formatting provided.");
@@ -187,6 +188,85 @@ public:
 		return is_greater_than(std::to_string(value).c_str());
 	}
 	bool is_greater_than(const BigInteger value) {
+		DIGIT_LIST _value = value.get_digits_whole();
+
+		if (sign == NEGATIVE) {
+			if (value.get_sign() == POSITIVE)
+				return false;
+
+			if (digits.whole.size() != _value.size())
+				return digits.whole.size() < _value.size();
+			else {
+				size_t eq_len = 0;
+				for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_a != digits.whole.cend(); it_a++, it_b++) {
+					if (*it_a > *it_b)
+						return false;
+					if (*it_a == *it_b) {
+						eq_len++;
+					}
+				}
+				return eq_len != _value.size();
+			}
+		}
+		else {
+			if (value.get_sign() == NEGATIVE)
+				return true;
+
+			if (digits.whole.size() != _value.size())
+				return digits.whole.size() > _value.size();
+			else {
+				size_t eq_len = 0;
+				for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_a != digits.whole.cend(); it_a++, it_b++) {
+					if (*it_a < *it_b)
+						return false;
+					if (*it_a == *it_b) {
+						eq_len++;
+					}
+				}
+				return eq_len != _value.size();
+			}
+		}
+	}
+	//
+
+	// is_equal_or_greater_than operation
+	bool is_equal_or_greater_than(const char* value) override {
+		Type _type = inspect_type(value);
+		if (_type == INTEGER) {
+			BigInteger _value;
+			_value.set_value(value);
+			return is_equal_or_greater_than(_value);
+		}
+		else if (_type == DECIMAL) {
+			std::string whole = "";
+			while (*value != '.') {
+				whole.push_back(*value);
+				value++;
+			}
+			value++;
+			while (*value != '\0') {
+				if (*value != '0')
+					return false;
+				value++;
+			}
+			BigInteger _value;
+			_value.set_value(whole);
+			return is_equal_or_greater_than(_value);
+		}
+		else {
+			throw std::invalid_argument("Error in BigInteger::is_equal_or_greater_than: invalid number formatting provided.");
+		}
+		return true;
+	}
+	bool is_equal_or_greater_than(const std::string& value) override {
+		return is_equal_or_greater_than(value.c_str());
+	}
+
+	template<typename T> requires std::is_arithmetic_v<T>
+	bool is_equal_or_greater_than(const T value) {
+		return is_equal_or_greater_than(std::to_string(value).c_str());
+	}
+	bool is_equal_or_greater_than(const BigInteger value) {
 		DIGIT_LIST _value = value.get_digits_whole();
 
 		if (sign == NEGATIVE) {

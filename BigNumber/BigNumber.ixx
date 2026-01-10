@@ -63,6 +63,8 @@ public:
 
 	virtual bool is_greater_than(const char* value) = 0;
 	virtual bool is_greater_than(const std::string& value) = 0;
+	virtual bool is_equal_or_greater_than(const char* value) = 0;
+	virtual bool is_equal_or_greater_than(const std::string& value) = 0;
 
 	virtual void sum(const char* value) = 0;
 	virtual void sum(const std::string& value) = 0;
