@@ -91,7 +91,9 @@ public:
 					return false;
 				value++;
 			}
-			return is_equal(whole.c_str());
+			BigInteger _value;
+			_value.set_value(whole);
+			return is_equal(_value);
 		}
 		else {
 			throw std::invalid_argument("Error in BigInteger::is_equal: invalid number formatting provided.");
@@ -122,8 +124,111 @@ public:
 		return true;
 	}
 	//
-	
-	// sum operations
+
+	// is_not_equal operation
+	bool is_not_equal(const char* value) override {
+		bool ret = true;
+		try {
+			ret = !is_equal(value);
+		}
+		catch (std::exception err) {
+			throw std::invalid_argument("Error in BigInteger::is_not_equal: invalid number formatting provided.");
+		}
+		return ret;
+	}	
+	bool is_not_equal(const std::string& value) override {
+		return is_not_equal(value.c_str());
+	}
+
+	template<typename T> requires std::is_arithmetic_v<T>
+	bool is_not_equal(const T value) {
+		return !is_equal(std::to_string(value).c_str());
+	}
+	bool is_not_equal(const BigInteger value) {
+		return !is_equal(value);
+	}
+	//
+
+	// is_greater_than operation
+	bool is_greater_than(const char* value) override {
+		Type _type = inspect_type(value);
+		if (_type == INTEGER) {
+			BigInteger _value;
+			_value.set_value(value);
+			return is_greater_than(_value);
+		}
+		else if (_type == DECIMAL) {
+			std::string whole = "";
+			while (*value != '.') {
+				whole.push_back(*value);
+				value++;
+			}
+			value++;
+			while (*value != '\0') {
+				if (*value != '0')
+					return false;
+				value++;
+			}
+			BigInteger _value;
+			_value.set_value(whole);
+			return is_greater_than(_value);
+		}
+		else {
+			throw std::invalid_argument("Error in BigInteger::is_greater_than: invalid number formatting provided.");
+		}
+		return true;
+	}
+	bool is_greater_than(const std::string& value) override {
+		return is_greater_than(value.c_str());
+	}
+
+	template<typename T> requires std::is_arithmetic_v<T>
+	bool is_greater_than(const T value) {
+		return is_greater_than(std::to_string(value).c_str());
+	}
+	bool is_greater_than(const BigInteger value) {
+		DIGIT_LIST _value = value.get_digits_whole();
+
+		if (sign == NEGATIVE) {
+			if (value.get_sign() == POSITIVE)
+				return false;
+
+			if (digits.whole.size() != _value.size())
+				return digits.whole.size() < _value.size();
+			else {
+				size_t eq_len = 0;
+				for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_a != digits.whole.cend(); it_a++, it_b++) {
+					if (*it_a > *it_b)
+						return false;
+					if (*it_a == *it_b) {
+						eq_len++;
+					}
+				}
+				return eq_len != _value.size();
+			}
+		}
+		else {
+			if (value.get_sign() == NEGATIVE)
+				return true;
+
+			if (digits.whole.size() != _value.size())
+				return digits.whole.size() > _value.size();
+			else {
+				size_t eq_len = 0;
+				for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_a != digits.whole.cend(); it_a++, it_b++) {
+					if (*it_a < *it_b)
+						return false;
+					if (*it_a == *it_b) {
+						eq_len++;
+					}
+				}
+				return eq_len != _value.size();
+			}
+		}
+	}
+	//
+		
+	// sum operation
 	void sum(const char* value) override {
 		BigInteger _value;
 		try {
