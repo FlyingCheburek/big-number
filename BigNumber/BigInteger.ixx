@@ -158,26 +158,19 @@ public:
 			return is_greater_than(_value);
 		}
 		else if (_type == DECIMAL) {
-			bool greater_fract = false;
 			std::string whole = "";
 			while (*value != '.') {
 				whole.push_back(*value);
 				value++;
 			}
-			value++;
-			while (*value != '\0') {
-				if (*value != '0')
-					greater_fract = true;
-				value++;
-			}
 			BigInteger _value;
 			_value.set_value(whole);
-			return is_greater_than(_value) ? true : is_equal(_value) && !greater_fract;
+			return is_greater_than(_value);
 		}
 		else {
 			throw std::invalid_argument("Error in BigInteger::is_greater_than: invalid number formatting provided.");
+			return false;
 		}
-		return true;
 	}
 	bool is_greater_than(const std::string& value) override {
 		return is_greater_than(value.c_str());
@@ -238,6 +231,7 @@ public:
 			return is_equal_or_greater_than(_value);
 		}
 		else if (_type == DECIMAL) {
+			bool greater_fract = false;
 			std::string whole = "";
 			while (*value != '.') {
 				whole.push_back(*value);
@@ -246,17 +240,17 @@ public:
 			value++;
 			while (*value != '\0') {
 				if (*value != '0')
-					return false;
+					greater_fract = true;
 				value++;
 			}
 			BigInteger _value;
 			_value.set_value(whole);
-			return is_equal_or_greater_than(_value);
+			return is_greater_than(_value) ? true : is_equal(_value) && !greater_fract;
 		}
 		else {
-			throw std::invalid_argument("Error in BigInteger::is_equal_or_greater_than: invalid number formatting provided.");
+			throw std::invalid_argument("Error in BigInteger::is_greater_or_equal_than: invalid number formatting provided.");
+			return false;
 		}
-		return true;
 	}
 	bool is_equal_or_greater_than(const std::string& value) override {
 		return is_equal_or_greater_than(value.c_str());
@@ -276,15 +270,11 @@ public:
 			if (digits.whole.size() != _value.size())
 				return digits.whole.size() < _value.size();
 			else {
-				size_t eq_len = 0;
 				for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_a != digits.whole.cend(); it_a++, it_b++) {
 					if (*it_a > *it_b)
 						return false;
-					if (*it_a == *it_b) {
-						eq_len++;
-					}
 				}
-				return eq_len != _value.size();
+				return true;
 			}
 		}
 		else {
@@ -294,15 +284,11 @@ public:
 			if (digits.whole.size() != _value.size())
 				return digits.whole.size() > _value.size();
 			else {
-				size_t eq_len = 0;
 				for (auto it_a = digits.whole.cbegin(), it_b = _value.cbegin(); it_a != digits.whole.cend(); it_a++, it_b++) {
 					if (*it_a < *it_b)
 						return false;
-					if (*it_a == *it_b) {
-						eq_len++;
-					}
 				}
-				return eq_len != _value.size();
+				return true;
 			}
 		}
 	}
