@@ -56,15 +56,19 @@ public:
 	virtual void set_value(const char* value) = 0;
 	virtual void set_value(const std::string& value) = 0;
 
-	virtual bool is_equal(const char* value) = 0;
-	virtual bool is_equal(const std::string& value) = 0;
-	virtual bool is_not_equal(const char* value) = 0;
-	virtual bool is_not_equal(const std::string& value) = 0;
+	virtual bool is_equal(const char* value) const = 0;
+	virtual bool is_equal(const std::string& value) const = 0;
+	virtual bool is_not_equal(const char* value) const = 0;
+	virtual bool is_not_equal(const std::string& value) const = 0;
 
-	virtual bool is_greater_than(const char* value) = 0;
-	virtual bool is_greater_than(const std::string& value) = 0;
-	virtual bool is_equal_or_greater_than(const char* value) = 0;
-	virtual bool is_equal_or_greater_than(const std::string& value) = 0;
+	virtual bool is_greater_than(const char* value) const = 0;
+	virtual bool is_greater_than(const std::string& value) const = 0;
+
+	virtual bool is_less_than(const char* value) const = 0;
+	virtual bool is_less_than(const std::string& value) const = 0;
+
+	virtual bool is_equal_or_greater_than(const char* value) const = 0;
+	virtual bool is_equal_or_greater_than(const std::string& value) const = 0;
 
 	virtual void sum(const char* value) = 0;
 	virtual void sum(const std::string& value) = 0;

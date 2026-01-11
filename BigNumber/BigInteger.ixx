@@ -72,7 +72,7 @@ public:
 	//
 
 	// is_equal operation
-	bool is_equal(const char* value) override {
+	bool is_equal(const char* value) const override {
 		Type _type = inspect_type(value);
 		if (_type == INTEGER) {
 			BigInteger _value;
@@ -100,15 +100,15 @@ public:
 		}
 		return false;
 	}
-	bool is_equal(const std::string& value) override {
+	bool is_equal(const std::string& value) const override {
 		return is_equal(value.c_str());
 	}
 
 	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_equal(const T value) {
+	bool is_equal(const T value) const {
 		return is_equal(std::to_string(value).c_str());
 	}
-	bool is_equal(const BigInteger value) {
+	bool is_equal(const BigInteger value) const {
 		if (sign != value.get_sign())
 			return false;
 
@@ -126,31 +126,31 @@ public:
 	//
 
 	// is_not_equal operation
-	bool is_not_equal(const char* value) override {
+	bool is_not_equal(const char* value) const override {
 		bool ret = true;
 		try {
 			ret = !is_equal(value);
 		}
-		catch (std::exception err) {
+		catch (const std::exception err) {
 			throw std::invalid_argument("Error in BigInteger::is_not_equal: invalid number formatting provided.");
 		}
 		return ret;
 	}	
-	bool is_not_equal(const std::string& value) override {
+	bool is_not_equal(const std::string& value) const override {
 		return is_not_equal(value.c_str());
 	}
 
 	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_not_equal(const T value) {
+	bool is_not_equal(const T value) const {
 		return !is_equal(std::to_string(value).c_str());
 	}
-	bool is_not_equal(const BigInteger value) {
+	bool is_not_equal(const BigInteger value) const { 
 		return !is_equal(value);
 	}
 	//
 
 	// is_greater_than operation
-	bool is_greater_than(const char* value) override {
+	bool is_greater_than(const char* value) const override {
 		Type _type = inspect_type(value);
 		if (_type == INTEGER) {
 			BigInteger _value;
@@ -172,15 +172,15 @@ public:
 			return false;
 		}
 	}
-	bool is_greater_than(const std::string& value) override {
+	bool is_greater_than(const std::string& value) const override {
 		return is_greater_than(value.c_str());
 	}
 
 	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_greater_than(const T value) {
+	bool is_greater_than(const T value) const {
 		return is_greater_than(std::to_string(value).c_str());
 	}
-	bool is_greater_than(const BigInteger value) {
+	bool is_greater_than(const BigInteger value) const {
 		DIGIT_LIST _value = value.get_digits_whole();
 
 		if (sign == NEGATIVE) {
@@ -222,8 +222,33 @@ public:
 	}
 	//
 
+	// is_less_than operation
+	bool is_less_than(const char* value) const override {
+		bool ret = true;
+		try {
+			ret = !is_equal_or_greater_than(value);
+		}
+		catch (const std::exception err) {
+			throw std::invalid_argument("Error in BigInteger::is_less_than: invalid number formatting provided.");
+		}
+		return ret;
+		
+	}
+	bool is_less_than(const std::string& value) const override {
+		return is_less_than(value.c_str());
+	}
+
+	template<typename T> requires std::is_arithmetic_v<T>
+	bool is_less_than(const T value) const {
+		return is_less_than(std::to_string(value).c_str());
+	}
+	bool is_less_than(const BigInteger value) const {
+		return !is_equal_or_greater_than(value);
+	}
+	//
+
 	// is_equal_or_greater_than operation
-	bool is_equal_or_greater_than(const char* value) override {
+	bool is_equal_or_greater_than(const char* value) const override {
 		Type _type = inspect_type(value);
 		if (_type == INTEGER) {
 			BigInteger _value;
@@ -252,15 +277,15 @@ public:
 			return false;
 		}
 	}
-	bool is_equal_or_greater_than(const std::string& value) override {
+	bool is_equal_or_greater_than(const std::string& value) const override {
 		return is_equal_or_greater_than(value.c_str());
 	}
 
 	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_equal_or_greater_than(const T value) {
+	bool is_equal_or_greater_than(const T value) const {
 		return is_equal_or_greater_than(std::to_string(value).c_str());
 	}
-	bool is_equal_or_greater_than(const BigInteger value) {
+	bool is_equal_or_greater_than(const BigInteger value) const {
 		DIGIT_LIST _value = value.get_digits_whole();
 
 		if (sign == NEGATIVE) {
