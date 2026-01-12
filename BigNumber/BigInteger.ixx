@@ -64,9 +64,10 @@ public:
 	void set_value(const std::string& value) override {
 		set_value(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	void set_value(const T value) {
+	void set_value(const long double value) override {
+		set_value(std::to_string(value).c_str());
+	}
+	void set_value(const long int value) override {
 		set_value(std::to_string(value).c_str());
 	}
 	//
@@ -103,9 +104,10 @@ public:
 	bool is_equal(const std::string& value) const override {
 		return is_equal(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_equal(const T value) const {
+	bool is_equal(const long double value) const override {
+		return is_equal(std::to_string(value).c_str());
+	}
+	bool is_equal(const long int value) const override {
 		return is_equal(std::to_string(value).c_str());
 	}
 	bool is_equal(const BigInteger value) const {
@@ -139,9 +141,10 @@ public:
 	bool is_not_equal(const std::string& value) const override {
 		return is_not_equal(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_not_equal(const T value) const {
+	bool is_not_equal(const long double value) const override {
+		return !is_equal(std::to_string(value).c_str());
+	}
+	bool is_not_equal(const long int value) const override {
 		return !is_equal(std::to_string(value).c_str());
 	}
 	bool is_not_equal(const BigInteger value) const { 
@@ -175,9 +178,10 @@ public:
 	bool is_greater_than(const std::string& value) const override {
 		return is_greater_than(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_greater_than(const T value) const {
+	bool is_greater_than(const long double value) const override {
+		return is_greater_than(std::to_string(value).c_str());
+	}
+	bool is_greater_than(const long int value) const override {
 		return is_greater_than(std::to_string(value).c_str());
 	}
 	bool is_greater_than(const BigInteger value) const {
@@ -237,9 +241,10 @@ public:
 	bool is_less_than(const std::string& value) const override {
 		return is_less_than(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_less_than(const T value) const {
+	bool is_less_than(const long double value) const override {
+		return is_less_than(std::to_string(value).c_str());
+	}
+	bool is_less_than(const long int value) const override {
 		return is_less_than(std::to_string(value).c_str());
 	}
 	bool is_less_than(const BigInteger value) const {
@@ -280,9 +285,10 @@ public:
 	bool is_equal_or_greater_than(const std::string& value) const override {
 		return is_equal_or_greater_than(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	bool is_equal_or_greater_than(const T value) const {
+	bool is_equal_or_greater_than(const long double value) const override {
+		return is_equal_or_greater_than(std::to_string(value).c_str());
+	}
+	bool is_equal_or_greater_than(const long int value) const override {
 		return is_equal_or_greater_than(std::to_string(value).c_str());
 	}
 	bool is_equal_or_greater_than(const BigInteger value) const {
@@ -333,12 +339,12 @@ public:
 	void sum(const std::string& value) override {
 		sum(value.c_str());
 	}
-
-	template<typename T> requires std::is_arithmetic_v<T>
-	void sum(const T value) {
+	void sum(const long double value) override {
 		sum(std::to_string(value).c_str());
 	}
-
+	void sum(const long int value) override {
+		sum(std::to_string(value).c_str());
+	}
 	void sum(const BigInteger value) noexcept {
 		if (sign == value.get_sign()) {
 			DIGIT_LIST a = get_digits_whole(), b = value.get_digits_whole();

@@ -5,8 +5,9 @@ import big_number_handler;
 int main() {
 	try {
 		BigInteger a;
-		a.set_value<int>(-1);
-		std::cout << (a.is_less_than("-2") ? "TRUE" : "FALSE");
+		a.set_value(765l);
+		a.sum(15.0l);
+		std::cout << a;
 	}
 	catch (std::exception err) {
 		std::cerr << err.what();
