@@ -1,12 +1,10 @@
 export module big_number_handler:big_integer;
 
 import :big_number;
-import <string>;
-import <type_traits>;
 import <ostream>;
 import <stdexcept>;
-
-import <iostream>;
+import <sstream>;
+import <limits>;
 
 export class BigInteger : public BigNumber {
 public:
@@ -105,7 +103,10 @@ public:
 		return is_equal(value.c_str());
 	}
 	bool is_equal(const long double value) const override {
-		return is_equal(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		return is_equal(os.str().c_str());
 	}
 	bool is_equal(const long int value) const override {
 		return is_equal(std::to_string(value).c_str());
@@ -142,7 +143,10 @@ public:
 		return is_not_equal(value.c_str());
 	}
 	bool is_not_equal(const long double value) const override {
-		return !is_equal(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		return !is_equal(os.str().c_str());
 	}
 	bool is_not_equal(const long int value) const override {
 		return !is_equal(std::to_string(value).c_str());
@@ -189,7 +193,10 @@ public:
 		return is_greater_than(value.c_str());
 	}
 	bool is_greater_than(const long double value) const override {
-		return is_greater_than(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		return is_greater_than(os.str().c_str());
 	}
 	bool is_greater_than(const long int value) const override {
 		return is_greater_than(std::to_string(value).c_str());
@@ -252,7 +259,10 @@ public:
 		return is_less_than(value.c_str());
 	}
 	bool is_less_than(const long double value) const override {
-		return is_less_than(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		return is_less_than(os.str().c_str());
 	}
 	bool is_less_than(const long int value) const override {
 		return is_less_than(std::to_string(value).c_str());
@@ -303,7 +313,10 @@ public:
 		return is_equal_or_greater_than(value.c_str());
 	}
 	bool is_equal_or_greater_than(const long double value) const override {
-		return is_equal_or_greater_than(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		return is_equal_or_greater_than(os.str().c_str());
 	}
 	bool is_equal_or_greater_than(const long int value) const override {
 		return is_equal_or_greater_than(std::to_string(value).c_str());
@@ -357,7 +370,10 @@ public:
 		return is_equal_or_less_than(value.c_str());
 	}
 	bool is_equal_or_less_than(const long double value) const override {
-		return is_equal_or_less_than(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		return is_equal_or_less_than(os.str().c_str());
 	}
 	bool is_equal_or_less_than(const long int value) const override {
 		return is_equal_or_less_than(std::to_string(value).c_str());
@@ -382,7 +398,10 @@ public:
 		sum(value.c_str());
 	}
 	void sum(const long double value) override {
-		sum(std::to_string(value).c_str());
+		std::ostringstream os;
+		os.precision(std::numeric_limits<long double>::max_digits10);
+		os << value;
+		sum(os.str().c_str());
 	}
 	void sum(const long int value) override {
 		sum(std::to_string(value).c_str());

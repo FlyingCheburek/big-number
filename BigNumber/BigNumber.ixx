@@ -3,6 +3,7 @@ export module big_number_handler:big_number;
 import <vector>;
 import <regex>;
 
+
 using DIGIT_LIST = std::vector<short>;
 
 export class BigNumber {
@@ -27,7 +28,7 @@ protected:
 		DIGIT_LIST fractional;
 	};
 	
-// class attributes and methods
+// attributes and methods
 
 	Type type;
 	Sign sign;
@@ -35,7 +36,7 @@ protected:
 
 public:
 
-	BigNumber() noexcept : sign(POSITIVE), digits({ .whole = {0}, .fractional = {0} }) {  }
+	BigNumber() noexcept : sign(POSITIVE), digits({ .whole = {0}, .fractional = {0} }) { }
 
 	Type get_type() const noexcept { return type; }
 	Sign get_sign() const noexcept { return sign; }
@@ -96,7 +97,7 @@ public:
 	virtual std::string to_string() const noexcept = 0;
 	
 
-// static methods
+// static attributes
 
 	static Type inspect_type(const std::string& value) noexcept {
 		return inspect_type(value.c_str());
