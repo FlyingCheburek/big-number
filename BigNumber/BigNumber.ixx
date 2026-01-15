@@ -83,6 +83,11 @@ public:
 	virtual bool is_equal_or_greater_than(const long double value) const = 0;
 	virtual bool is_equal_or_greater_than(const long int value) const = 0;
 
+	virtual bool is_equal_or_less_than(const char* value) const = 0;
+	virtual bool is_equal_or_less_than(const std::string& value) const = 0;
+	virtual bool is_equal_or_less_than(const long double value) const = 0;
+	virtual bool is_equal_or_less_than(const long int value) const = 0;
+		 
 	virtual void sum(const char* value) = 0;
 	virtual void sum(const std::string& value) = 0;
 	virtual void sum(const long double value) = 0;

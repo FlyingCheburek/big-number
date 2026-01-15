@@ -110,7 +110,7 @@ public:
 	bool is_equal(const long int value) const override {
 		return is_equal(std::to_string(value).c_str());
 	}
-	bool is_equal(const BigInteger value) const {
+	bool is_equal(const BigInteger& value) const {
 		if (sign != value.get_sign())
 			return false;
 
@@ -147,7 +147,7 @@ public:
 	bool is_not_equal(const long int value) const override {
 		return !is_equal(std::to_string(value).c_str());
 	}
-	bool is_not_equal(const BigInteger value) const { 
+	bool is_not_equal(const BigInteger& value) const { 
 		return !is_equal(value);
 	}
 	//
@@ -168,7 +168,17 @@ public:
 			}
 			BigInteger _value;
 			_value.set_value(whole);
-			return is_greater_than(_value);
+			bool is_greater = is_greater_than(_value);
+			while (*value != '\0') {
+				if (*value != '0') {
+					if (is_equal(whole)) {
+						return sign == NEGATIVE;
+					}
+					break;
+				}
+				value++;
+			}
+			return is_greater;
 		}
 		else {
 			throw std::invalid_argument("Error in BigInteger::is_greater_than: invalid number formatting provided.");
@@ -184,7 +194,7 @@ public:
 	bool is_greater_than(const long int value) const override {
 		return is_greater_than(std::to_string(value).c_str());
 	}
-	bool is_greater_than(const BigInteger value) const {
+	bool is_greater_than(const BigInteger& value) const {
 		DIGIT_LIST _value = value.get_digits_whole();
 
 		if (sign == NEGATIVE) {
@@ -247,7 +257,7 @@ public:
 	bool is_less_than(const long int value) const override {
 		return is_less_than(std::to_string(value).c_str());
 	}
-	bool is_less_than(const BigInteger value) const {
+	bool is_less_than(const BigInteger& value) const {
 		return !is_equal_or_greater_than(value);
 	}
 	//
@@ -269,13 +279,20 @@ public:
 			}
 			value++;
 			while (*value != '\0') {
-				if (*value != '0')
+				if (*value != '0') {
 					greater_fract = true;
+					break;
+				}
 				value++;
 			}
 			BigInteger _value;
 			_value.set_value(whole);
-			return is_greater_than(_value) ? true : is_equal(_value) && !greater_fract;
+			if (is_greater_than(_value))
+				return true;
+			if (is_equal(_value)) {
+				return !greater_fract ? true : sign == NEGATIVE;
+			}
+			return false;
 		}
 		else {
 			throw std::invalid_argument("Error in BigInteger::is_greater_or_equal_than: invalid number formatting provided.");
@@ -291,7 +308,7 @@ public:
 	bool is_equal_or_greater_than(const long int value) const override {
 		return is_equal_or_greater_than(std::to_string(value).c_str());
 	}
-	bool is_equal_or_greater_than(const BigInteger value) const {
+	bool is_equal_or_greater_than(const BigInteger& value) const {
 		DIGIT_LIST _value = value.get_digits_whole();
 
 		if (sign == NEGATIVE) {
@@ -324,6 +341,31 @@ public:
 		}
 	}
 	//
+
+	// is_equal_or_less_than operation
+	bool is_equal_or_less_than(const char* value) const override {
+		bool ret = true;
+		try {
+			ret = !is_greater_than(value);
+		}
+		catch (const std::exception err) {
+			throw std::invalid_argument("Error in BigInteger::is_equal_or_less_than: invalid number formatting provided.");
+		}
+		return ret;
+	}
+	bool is_equal_or_less_than(const std::string& value) const override {
+		return is_equal_or_less_than(value.c_str());
+	}
+	bool is_equal_or_less_than(const long double value) const override {
+		return is_equal_or_less_than(std::to_string(value).c_str());
+	}
+	bool is_equal_or_less_than(const long int value) const override {
+		return is_equal_or_less_than(std::to_string(value).c_str());
+	}
+	bool is_equal_or_less_than(const BigInteger& value) const {
+		return !is_greater_than(value);
+	}
+	//
 		
 	// sum operation
 	void sum(const char* value) override {
@@ -345,7 +387,7 @@ public:
 	void sum(const long int value) override {
 		sum(std::to_string(value).c_str());
 	}
-	void sum(const BigInteger value) noexcept {
+	void sum(const BigInteger& value) noexcept {
 		if (sign == value.get_sign()) {
 			DIGIT_LIST a = get_digits_whole(), b = value.get_digits_whole();
 			DIGIT_LIST* _a = nullptr, * _b = nullptr;
